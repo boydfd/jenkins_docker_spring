@@ -28,5 +28,21 @@ pipeline {
                 }
             }
         }
+        stage('Build') {
+            agent {
+                docker {
+                    image 'java:8-jdk-alpine'
+                    args '-v /home/jenkins/.gradle:/root/.gradle'
+                }
+            }
+            steps {
+                sh './gradlew clean build'
+            }
+            post {
+                success {
+                    archiveArtifacts artifacts: 'build/libs/*.jar', fingerprint: true
+                }
+            }
+        }
     }
 }
