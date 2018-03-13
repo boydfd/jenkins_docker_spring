@@ -15,9 +15,4 @@ public class JenkinsDockerDemoApplicationTests {
     public void contextLoads() {
     }
 
-    @Test
-    public void shouldFail() {
-        assertEquals("expected value","wrong value");
-    }
-
 }
