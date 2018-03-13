@@ -16,6 +16,7 @@ pipeline {
             agent {
                 docker {
                     image 'java:8-jdk-alpine'
+                    args '-v /home/jenkins/.gradle:/root/.gradle'
                 }
             }
             steps {
