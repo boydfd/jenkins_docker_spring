@@ -60,10 +60,20 @@ pipeline {
                       selector            : [$class: 'SpecificBuildSelector', buildNumber: '${BUILD_NUMBER}']
                 ])
 
-                sh 'ls -l'
-                sh 'ls -l build'
                 sh 'cp build/libs/*.jar docker/app.jar'
                 sh 'docker/build.sh'
+            }
+        }
+
+        stage('Deploy') {
+            agent {
+                docker { image 'busybox' }
+            }
+            steps {
+                sshPublisher(publishers: [
+                        sshPublisherDesc(
+                                configName: 'configuration1',
+                                transfers: [sshTransfer(execCommand: 'echo 111')])])
             }
         }
     }
