@@ -44,5 +44,27 @@ pipeline {
                 }
             }
         }
+
+        stage('Build Docker') {
+            agent {
+                docker {
+                    image 'docker:stable'
+                    args '-v /var/run/docker.sock:/var/run/docker.sock'
+                }
+            }
+            steps {
+                step([$class              : 'CopyArtifact',
+                      filter              : 'build/libs/*.jar',
+                      fingerprintArtifacts: true,
+                      projectName         : '${JOB_NAME}',
+                      selector            : [$class: 'SpecificBuildSelector', buildNumber: '${BUILD_NUMBER}']
+                ])
+
+                sh 'ls -l'
+                sh 'ls -l build'
+                sh 'cp build/libs/*.jar docker/app.jar'
+                sh 'docker/build.sh'
+            }
+        }
     }
 }
