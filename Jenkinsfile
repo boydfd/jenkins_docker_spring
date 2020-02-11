@@ -2,12 +2,7 @@ pipeline {
     agent none
     stages {
         stage('Test') {
-            agent {
-                docker {
-                    image 'java:8-jdk-alpine'
-                    args '-v /home/jenkins/.gradle:/root/.gradle'
-                }
-            }
+			agent { kubernetes { label 'gradle' }}
             steps {
                 sh './gradlew clean test'
             }
@@ -18,12 +13,7 @@ pipeline {
             }
         }
         stage('Build') {
-            agent {
-                docker {
-                    image 'java:8-jdk-alpine'
-                    args '-v /home/jenkins/.gradle:/root/.gradle'
-                }
-            }
+			agent { kubernetes { label 'gradle' }}
             steps {
                 sh './gradlew clean build'
             }
@@ -35,12 +25,7 @@ pipeline {
         }
 
         stage('Build Docker') {
-            agent {
-                docker {
-                    image 'docker:stable'
-                    args '-v /var/run/docker.sock:/var/run/docker.sock'
-                }
-            }
+			agent { kubernetes { label 'docker' }}
             steps {
                 step([$class              : 'CopyArtifact',
                       filter              : 'build/libs/*.jar',
@@ -51,18 +36,6 @@ pipeline {
 
                 sh 'cp build/libs/*.jar docker/app.jar'
                 sh 'docker/build.sh'
-            }
-        }
-
-        stage('Deploy') {
-            agent {
-                docker { image 'busybox' }
-            }
-            steps {
-                sshPublisher(publishers: [
-                        sshPublisherDesc(
-                                configName: 'configuration1',
-                                transfers: [sshTransfer(execCommand: 'echo 111')])])
             }
         }
     }
