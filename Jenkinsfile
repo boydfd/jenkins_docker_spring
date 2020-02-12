@@ -1,29 +1,33 @@
 pipeline {
     agent none
     stages {
-        stage('Test') {
-			agent { kubernetes { label 'gradle' }}
-            steps {
-                sh './gradlew clean test'
-                sh 'ls /usr/bin'
-                sh 'ls /usr/local/bin'
-            }
-            post {
-                always {
-                    junit 'build/test-results/**/*.xml'
-                }
-            }
-        }
-        stage('Build') {
-			agent { kubernetes { label 'gradle' }}
-            steps {
-                sh './gradlew clean build'
-            }
-            post {
-                success {
-                    archiveArtifacts artifacts: 'build/libs/*.jar', fingerprint: true
-                }
-            }
+		container ('gradle') {
+			stage('Test') {
+				agent { kubernetes { label 'gradle' }}
+				steps {
+					sh '''
+					./gradlew clean test
+					ls /usr/bin
+					ls /usr/local/bin
+					'''
+				}
+				post {
+					always {
+						junit 'build/test-results/**/*.xml'
+					}
+				}
+			}
+			stage('Build') {
+				agent { kubernetes { label 'gradle' }}
+				steps {
+					sh './gradlew clean build'
+				}
+				post {
+					success {
+						archiveArtifacts artifacts: 'build/libs/*.jar', fingerprint: true
+					}
+				}
+			}
         }
 
         stage('Build Docker') {
