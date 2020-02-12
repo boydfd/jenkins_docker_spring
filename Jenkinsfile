@@ -5,6 +5,8 @@ pipeline {
 			agent { kubernetes { label 'gradle' }}
             steps {
                 sh './gradlew clean test'
+                sh 'ls /usr/bin'
+                sh 'ls /usr/local/bin'
             }
             post {
                 always {
@@ -36,6 +38,8 @@ pipeline {
 
                 sh 'cp build/libs/*.jar docker/app.jar'
                 sh 'docker/build.sh'
+                sh 'ls /usr/bin'
+                sh 'ls /usr/local/bin'
             }
         }
     }
