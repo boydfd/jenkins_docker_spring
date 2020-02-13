@@ -1,11 +1,12 @@
 #!/usr/bin/env sh
 
-dockerRegistry='192.168.42.10:5000'
+dockerRegistry='docker.aboydfd.com:32013'
 imageName=jenkins_docker_spring
 cd $(dirname $([ -L $0 ] && readlink -f $0 || echo $0))
 
 
 set -x
+dcoker log docker.aboydfd.com:32013 -u boydfd -p 123456
 docker build -t "$dockerRegistry/$imageName" .
 docker push "$dockerRegistry/$imageName"
 set +x
