@@ -1,15 +1,13 @@
 pipeline {
     agent none
+    options { skipDefaultCheckout() }
     stages {
 		stage('Test') {
 			agent { kubernetes { label 'gradle' }}
 			steps {
+				checkout scm
 				container ('gradle') {
-					sh '''
-					./gradlew clean test
-					ls /usr/bin
-					ls /usr/local/bin
-					'''
+					sh './gradlew clean test'
 				}
 			}
 			post {
@@ -42,11 +40,8 @@ pipeline {
 						  projectName         : '${JOB_NAME}',
 						  selector            : [$class: 'SpecificBuildSelector', buildNumber: '${BUILD_NUMBER}']
 					])
-//
 					sh 'cp build/libs/*.jar docker/app.jar'
 					sh 'docker/build.sh'
-					sh 'ls /usr/bin'
-					sh 'ls /usr/local/bin'
 				}
             }
         }
