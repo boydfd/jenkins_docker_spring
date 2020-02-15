@@ -26,6 +26,7 @@ pipeline {
 			post {
 				success {
 					archiveArtifacts artifacts: 'build/libs/*.jar', fingerprint: true
+					archiveArtifacts artifacts: 'docker', fingerprint: true
 				}
 			}
 		}
@@ -36,6 +37,12 @@ pipeline {
 				container ('docker') {
 					step([$class              : 'CopyArtifact',
 						  filter              : 'build/libs/*.jar',
+						  fingerprintArtifacts: true,
+						  projectName         : '${JOB_NAME}',
+						  selector            : [$class: 'SpecificBuildSelector', buildNumber: '${BUILD_NUMBER}']
+					])
+					step([$class              : 'CopyArtifact',
+						  filter              : 'docker',
 						  fingerprintArtifacts: true,
 						  projectName         : '${JOB_NAME}',
 						  selector            : [$class: 'SpecificBuildSelector', buildNumber: '${BUILD_NUMBER}']
