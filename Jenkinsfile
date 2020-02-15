@@ -42,7 +42,7 @@ pipeline {
 						  selector            : [$class: 'SpecificBuildSelector', buildNumber: '${BUILD_NUMBER}']
 					])
 					step([$class              : 'CopyArtifact',
-						  filter              : 'docker',
+						  filter              : 'docker/*',
 						  fingerprintArtifacts: true,
 						  projectName         : '${JOB_NAME}',
 						  selector            : [$class: 'SpecificBuildSelector', buildNumber: '${BUILD_NUMBER}']
