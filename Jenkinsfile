@@ -26,7 +26,7 @@ pipeline {
 			post {
 				success {
 					archiveArtifacts artifacts: 'build/libs/*.jar', fingerprint: true
-					archiveArtifacts artifacts: 'docker', fingerprint: true
+					archiveArtifacts artifacts: 'docker/*', fingerprint: true
 				}
 			}
 		}
