@@ -19,6 +19,7 @@ pipeline {
 		stage('Build') {
 			agent { kubernetes { label 'gradle' }}
 			steps {
+				checkout scm
 				container ('gradle') {
 				sh './gradlew clean build'
 				}
