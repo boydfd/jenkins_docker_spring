@@ -8,7 +8,6 @@ public class JenkinsDockerDemoApplicationTests {
 
     @Test
     public void contextLoads() {
-        assertEquals("a", "b");
     }
 
 }
