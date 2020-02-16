@@ -14,13 +14,21 @@ pipeline {
 				always {
 					junit 'build/test-results/**/*.xml'
 				}
+				success {
+					archiveArtifacts artifacts: './*', fingerprint: true
+				}
 			}
 		}
 		stage('Build') {
 			agent { kubernetes { label 'gradle' }}
 			steps {
-				checkout scm
 				container ('gradle') {
+				step([$class              : 'CopyArtifact',
+					  filter              : './*',
+					  fingerprintArtifacts: true,
+					  projectName         : '${JOB_NAME}',
+					  selector            : [$class: 'SpecificBuildSelector', buildNumber: '${BUILD_NUMBER}']
+				])
 				sh './gradlew clean build'
 				}
 			}
