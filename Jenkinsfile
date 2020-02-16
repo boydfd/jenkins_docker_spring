@@ -15,7 +15,7 @@ pipeline {
 					junit 'build/test-results/**/*.xml'
 				}
 				success {
-					archiveArtifacts artifacts: './*', fingerprint: true
+					archiveArtifacts artifacts: '*', fingerprint: true
 				}
 			}
 		}
@@ -24,7 +24,7 @@ pipeline {
 			steps {
 				container ('gradle') {
 				step([$class              : 'CopyArtifact',
-					  filter              : './*',
+					  filter              : '*',
 					  fingerprintArtifacts: true,
 					  projectName         : '${JOB_NAME}',
 					  selector            : [$class: 'SpecificBuildSelector', buildNumber: '${BUILD_NUMBER}']
