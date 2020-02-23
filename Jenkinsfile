@@ -1,6 +1,6 @@
 pipeline {
     agent none
-    options { timestamps(); skipDefaultCheckout(); timeout(time: 1, unit: 'HOURS'); }
+    options { skipDefaultCheckout(); timeout(time: 1, unit: 'HOURS'); }
     stages {
 		stage('Test/Build') {
 			agent { kubernetes { label 'gradle' }}
